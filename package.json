@@ -1,0 +1,19 @@
+{
+  "name": "agent-skills-for-codex",
+  "version": "0.1.0",
+  "description": "Production-grade engineering skills and Codex project installer.",
+  "license": "MIT",
+  "bin": {
+    "agent-skills-for-codex": "./scripts/install-codex-project.js"
+  },
+  "files": [
+    ".codex/agents",
+    ".codex/config.toml",
+    ".codex/hooks.json",
+    "hooks",
+    "scripts/install-codex-project.js",
+    "skills",
+    "LICENSE",
+    "README.md"
+  ]
+}

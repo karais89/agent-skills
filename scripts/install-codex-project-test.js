@@ -36,6 +36,18 @@ function readJson(filePath) {
 function main() {
   const targets = [];
   try {
+    const manifest = readJson(path.join(root, 'package.json'));
+    assert(manifest.bin && manifest.bin['agent-skills-for-codex'] === './scripts/install-codex-project.js', 'package.json exposes installer bin');
+
+    const cwdTarget = makeTarget();
+    targets.push(cwdTarget);
+    fs.mkdirSync(path.join(cwdTarget, '.git'));
+
+    const cwdInstall = run([], { cwd: cwdTarget });
+    assert(cwdInstall.status === 0, `cwd install failed:\n${cwdInstall.stdout}\n${cwdInstall.stderr}`);
+    assert(fs.existsSync(path.join(cwdTarget, '.agents', 'skills', 'using-agent-skills', 'SKILL.md')), 'cwd install installs skills');
+    assert(fs.existsSync(path.join(cwdTarget, '.codex', 'agents', 'code-reviewer.toml')), 'cwd install installs agents');
+
     const fullTarget = makeTarget();
     targets.push(fullTarget);
     fs.mkdirSync(path.join(fullTarget, '.git'));

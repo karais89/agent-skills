@@ -104,24 +104,18 @@ bash hooks/session-start-test.sh
 
 ## Codex 설치 요약
 
-프로젝트별로 스킬만 설치하려면 대상 프로젝트 루트에서:
+스킬만 설치하려면 대상 프로젝트 루트에서:
 
 ```bash
-npx skills add https://github.com/karais89/agent-skills --agent codex --skill '*'
+npx skills@latest add karais89/agent-skills
 ```
 
 이 방식은 스킬 파일만 설치하며 Codex SessionStart hook, `.codex/agents/` custom subagent, `.codex/config.toml`은 설치하지 않습니다.
 
-대상 프로젝트에 스킬, SessionStart hook, custom subagent를 함께 설치하려면 이 저장소를 clone한 뒤:
+대상 프로젝트에 스킬, SessionStart hook, custom subagent를 함께 설치하려면 대상 프로젝트 루트에서:
 
 ```bash
-node agent-skills/scripts/install-codex-project.js --target /path/to/project
+npx github:karais89/agent-skills
 ```
 
-이 저장소를 Codex 플러그인으로 설치하려면:
-
-```bash
-codex plugin marketplace add karais89/agent-skills
-```
-
-그 다음 Codex에서 `/plugins`를 열고 `Agent Skills for Codex` marketplace의 `agent-skills`를 설치합니다. 설치 후 `/hooks`에서 hook을 검토하고 신뢰 처리합니다.
+현재 Codex 플러그인 번들은 custom subagent를 설치하지 않으므로 권장 설치 경로에서는 제외합니다.

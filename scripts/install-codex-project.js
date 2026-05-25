@@ -32,22 +32,20 @@ const HOOK_MARKER = 'codex-session-start.js';
 
 function usage() {
   console.log(`Usage:
-  node scripts/install-codex-project.js --target <project> [options]
+  npx github:karais89/agent-skills [options]
+  node scripts/install-codex-project.js [options]
 
 Options:
-  --profile <skills|codex>  Install profile. Default: codex.
-  --skills                 Install only skills, unless combined with other component flags.
-  --hooks                  Install SessionStart hook runtime and .codex/hooks.json entry.
-  --agents                 Install .codex/agents/*.toml.
+  --target <project>        Install into this directory. Default: current directory.
   --config                 Also install .codex/config.toml. Not included by default.
   --force                  Overwrite managed files when they differ.
   --dry-run                Print actions without writing files.
   --help                   Show this help.
 
 Examples:
+  npx github:karais89/agent-skills
+  npx github:karais89/agent-skills --force
   node scripts/install-codex-project.js --target ../my-app
-  node scripts/install-codex-project.js --target ../my-app --profile skills
-  node scripts/install-codex-project.js --target ../my-app --hooks --agents
 `);
 }
 
@@ -317,14 +315,9 @@ function main() {
     usage();
     return;
   }
-  if (!args.target) {
-    usage();
-    throw new Error('Missing required --target <project>');
-  }
-
   validateSourceFiles();
 
-  const target = path.resolve(args.target);
+  const target = args.target ? path.resolve(args.target) : process.cwd();
   if (!fs.existsSync(target) || !fs.statSync(target).isDirectory()) {
     throw new Error(`Target project directory does not exist: ${target}`);
   }
