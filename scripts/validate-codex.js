@@ -47,7 +47,7 @@ function validatePluginManifest() {
   assert(manifest.name === 'agent-skills', 'Codex plugin name is agent-skills');
   assert(manifest.skills === './skills/', 'Codex plugin points at ./skills/');
   assert(!Object.prototype.hasOwnProperty.call(manifest, 'hooks'), 'Codex plugin relies on default hooks/hooks.json for compatibility');
-  assert(!Object.prototype.hasOwnProperty.call(manifest, 'commands'), 'Codex plugin omits Claude-only commands field');
+  assert(!Object.prototype.hasOwnProperty.call(manifest, 'commands'), 'Codex plugin omits unsupported commands field');
   assert(!Object.prototype.hasOwnProperty.call(manifest, 'agents'), 'Codex plugin omits unsupported agents field');
 }
 
@@ -126,7 +126,7 @@ function simulateHooks() {
     }));
     assert(startup.hookSpecificOutput && startup.hookSpecificOutput.hookEventName === 'SessionStart', 'SessionStart simulation returns Codex hookSpecificOutput');
     assert(startup.hookSpecificOutput.additionalContext.includes('using-agent-skills'), 'SessionStart context points to using-agent-skills');
-    assert(!Object.prototype.hasOwnProperty.call(startup, 'priority'), 'SessionStart output does not use Claude priority payload');
+    assert(!Object.prototype.hasOwnProperty.call(startup, 'priority'), 'SessionStart output does not use legacy priority payload');
 
     const invalidInput = runHook('not-json');
     assert(invalidInput.hookSpecificOutput && invalidInput.hookSpecificOutput.additionalContext.includes('Agent Skills'), 'Hook tolerates malformed stdin');

@@ -1,7 +1,7 @@
 {
   "name": "agent-skills",
   "version": "0.1.0",
-  "description": "Production-grade engineering skills for Codex and other AI coding agents.",
+  "description": "Production-grade engineering skills for Codex.",
   "author": {
     "name": "Addy Osmani"
   },
@@ -16,9 +16,9 @@
   ],
   "skills": "./skills/",
   "interface": {
-    "displayName": "Agent Skills",
-    "shortDescription": "Engineering workflows from spec to ship",
-    "longDescription": "A lifecycle pack of reusable engineering skills for specification, planning, incremental implementation, testing, review, simplification, security, performance, and launch readiness.",
+    "displayName": "Agent Skills for Codex",
+    "shortDescription": "Codex engineering workflows from spec to ship",
+    "longDescription": "A Codex-focused lifecycle pack of reusable engineering skills for specification, planning, incremental implementation, testing, review, simplification, security, performance, and launch readiness.",
     "developerName": "Addy Osmani",
     "category": "Productivity",
     "capabilities": [

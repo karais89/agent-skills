@@ -1,12 +1,7 @@
 #!/bin/bash
-# session-start-test.sh - Tests for the SessionStart hook JSON payload
+# session-start-test.sh - Tests for the Codex SessionStart hook JSON payload
 
 set -euo pipefail
-
-has_jq=0
-if command -v jq >/dev/null 2>&1; then
-  has_jq=1
-fi
 
 NODE_BIN="${NODE_BIN:-}"
 if [ -z "$NODE_BIN" ]; then
@@ -27,33 +22,26 @@ if [ -z "$NODE_BIN" ]; then
   exit 0
 fi
 
-payload="$(bash hooks/session-start.sh)"
+payload="$(printf '%s' '{"hook_event_name":"SessionStart","source":"startup"}' | bash hooks/session-start.sh)"
 
- "$NODE_BIN" - "$payload" "$has_jq" <<'NODE'
+"$NODE_BIN" - "$payload" <<'NODE'
 const payload = JSON.parse(process.argv[2]);
-const hasJq = process.argv[3] === '1';
 
-if (hasJq) {
-  if (payload.priority !== 'IMPORTANT') {
-    throw new Error(`expected IMPORTANT priority, got ${payload.priority}`);
-  }
-
-  if (!payload.message.includes('agent-skills loaded.')) {
-    throw new Error('message is missing startup preface');
-  }
-
-  if (!payload.message.includes('# Using Agent Skills')) {
-    throw new Error('message is missing using-agent-skills content');
-  }
-} else {
-  if (payload.priority !== 'INFO') {
-    throw new Error(`expected INFO priority when jq is missing, got ${payload.priority}`);
-  }
-
-  if (!payload.message.includes('jq is required')) {
-    throw new Error('message is missing jq fallback guidance');
-  }
+if (Object.prototype.hasOwnProperty.call(payload, 'priority')) {
+  throw new Error('Codex hook output must not use legacy priority payloads');
 }
 
-console.log('session-start JSON payload OK');
+if (!payload.hookSpecificOutput) {
+  throw new Error('missing hookSpecificOutput');
+}
+
+if (payload.hookSpecificOutput.hookEventName !== 'SessionStart') {
+  throw new Error(`expected SessionStart event, got ${payload.hookSpecificOutput.hookEventName}`);
+}
+
+if (!payload.hookSpecificOutput.additionalContext.includes('using-agent-skills')) {
+  throw new Error('additionalContext should point to using-agent-skills');
+}
+
+console.log('Codex session-start JSON payload OK');
 NODE

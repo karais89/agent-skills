@@ -1,92 +1,66 @@
-# Contributing to Agent Skills
+# Contributing
 
-Thanks for your interest in contributing! This project is a collection of production-grade engineering skills for AI coding agents.
+이 저장소는 Codex용 엔지니어링 스킬 모음입니다. 기여할 때는 Codex의 점진적 스킬 로딩과 플러그인 배포 구조를 기준으로 판단합니다.
 
-## Adding a New Skill
+## 새 스킬 추가
 
-1. Create a directory under `skills/` with a kebab-case name
-2. Add a `SKILL.md` following the format in [docs/skill-anatomy.md](docs/skill-anatomy.md)
-3. Include YAML frontmatter with `name` and `description` fields
-4. Ensure the `description` starts with what the skill does (third person), then includes one or more `Use when` trigger conditions
+1. `skills/` 아래에 kebab-case 디렉터리를 만듭니다.
+2. `SKILL.md`를 추가하고 [docs/skill-anatomy.md](docs/skill-anatomy.md)의 형식을 따릅니다.
+3. YAML frontmatter에 `name`과 `description`을 둡니다.
+4. `description`에는 스킬이 무엇을 하는지와 `Use when` 트리거 조건을 포함합니다.
+5. helper script가 필요할 때만 `scripts/`를 추가합니다.
 
-### Skill Quality Bar
+## 품질 기준
 
-Skills should be:
+- 구체적이어야 합니다. 추상적인 조언보다 실행 가능한 절차를 씁니다.
+- 검증 가능해야 합니다. 완료 증거가 명확해야 합니다.
+- 실제 엔지니어링 워크플로에 기반해야 합니다.
+- Codex가 필요할 때만 본문을 읽는다는 전제에 맞게 간결해야 합니다.
 
-- **Specific** — Actionable steps, not vague advice
-- **Verifiable** — Clear exit criteria with evidence requirements
-- **Battle-tested** — Based on real engineering workflows, not theoretical ideals
-- **Minimal** — Only the content needed to guide the agent correctly
+## 기존 스킬 수정
 
-### Structure
+- `skills/` 원본을 먼저 수정합니다.
+- 변경은 가능한 한 작게 유지합니다.
+- frontmatter와 필수 섹션이 검증을 통과하는지 확인합니다.
+- 수정 후 Codex 미러와 플러그인 번들을 동기화합니다.
 
-Every new skill must have:
+```bash
+node scripts/sync-codex-skills.js
+```
 
-- `SKILL.md` in the skill directory
-- YAML frontmatter with valid `name` and `description`
+## Hook 수정
 
-New skills should generally follow the standard anatomy:
+Codex SessionStart hook은 `hooks/session-start.sh`와 `hooks/codex-session-start.js`가 담당합니다. 출력은 Codex 형식인 `hookSpecificOutput.additionalContext`를 사용해야 합니다.
 
-- **Overview** — What this skill does and why it matters
-- **When to Use** — Triggering conditions
-- **Process** — Step-by-step workflow
-- **Common Rationalizations** — Excuses agents use to skip steps, with rebuttals
-- **Red Flags** — Warning signs that the skill is being applied incorrectly
-- **Verification** — How to confirm the skill was applied correctly
-
-The frontmatter fields above are required. The section anatomy is a recommended pattern: equivalent headings such as `How It Works`, `Workflow`, or `Core Process` are fine when they preserve the same intent and keep the skill easy to follow.
-
-### What Not to Do
-
-- Don't duplicate content between skills — reference other skills instead
-- Don't add skills that are vague advice instead of actionable processes
-- Don't create supporting files unless content exceeds 100 lines
-- Don't create an empty `scripts/` directory just to match another skill — add `scripts/` only when the skill includes runnable helpers
-- Don't put reference material inside skill directories — use `references/` instead
-
-## Modifying Existing Skills
-
-- Keep changes focused and minimal
-- Preserve the existing structure and tone
-- Test that YAML frontmatter remains valid after edits
-
-## Testing Hooks
-
-The session-start hook (`hooks/session-start.sh`) injects the `using-agent-skills` meta-skill into every new Claude Code session. A regression test at `hooks/session-start-test.sh` validates the hook's JSON payload — both when `jq` is available and when it isn't.
-
-Run it before opening any PR that touches:
-
-- `hooks/session-start.sh`
-- `skills/using-agent-skills/SKILL.md` (the meta-skill content embedded by the hook)
+Hook 관련 파일을 바꿨다면 다음 테스트를 실행합니다.
 
 ```bash
 bash hooks/session-start-test.sh
 ```
 
-Expected output: `session-start JSON payload OK`. The script exits non-zero on any assertion failure.
+기대 출력:
 
-### Reproducing the no-jq fallback
-
-The hook gracefully degrades to an `INFO`-priority payload when `jq` isn't on `PATH`. To exercise that branch locally, strip `jq`'s directory from `PATH` for the test invocation:
-
-```bash
-JQ_DIR=$(dirname "$(command -v jq)")
-PATH=$(echo "$PATH" | tr ':' '\n' | grep -v "^${JQ_DIR}$" | tr '\n' ':' | sed 's/:$//') \
-  bash hooks/session-start-test.sh
+```text
+Codex session-start JSON payload OK
 ```
 
-This works cleanly when `jq` lives in its own directory (e.g. `/opt/homebrew/bin` from Homebrew, `/usr/local/bin` from a manual install). If your `jq` shares a system bin with other tools the test depends on (such as `mktemp` in `/usr/bin`), the simpler approach is to install `jq` via a separate package manager so it has its own bin directory, then re-run.
+## 배포 전 검증
 
-The hook's `command -v jq` check fails under the stripped `PATH`, the `INFO`-priority fallback runs, and the test asserts the `jq is required` guidance message instead of the normal payload.
+```bash
+node scripts/sync-codex-skills.js --check
+node scripts/validate-skills.js
+node scripts/validate-codex.js
+bash hooks/session-start-test.sh
+```
 
-## Reporting Issues
+## 이슈 제보
 
-Open an issue if you find:
+다음 경우 이슈를 열어 주세요.
 
-- A skill that gives incorrect or outdated guidance
-- Missing coverage for a common engineering workflow
-- Inconsistencies between skills
+- 스킬 지침이 부정확하거나 오래된 경우
+- 자주 쓰는 엔지니어링 워크플로가 빠진 경우
+- 스킬, 미러, 플러그인 번들 사이에 불일치가 있는 경우
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the MIT License.
+기여 내용은 MIT License로 배포됩니다.

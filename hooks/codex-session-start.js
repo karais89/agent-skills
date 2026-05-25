@@ -30,7 +30,7 @@ function parseInput(raw) {
 }
 
 function findRoot() {
-  const explicit = process.env.AGENT_SKILLS_ROOT || process.env.PLUGIN_ROOT || process.env.CLAUDE_PLUGIN_ROOT;
+  const explicit = process.env.AGENT_SKILLS_ROOT || process.env.PLUGIN_ROOT;
   if (explicit) return path.resolve(explicit);
   return path.resolve(__dirname, '..');
 }
