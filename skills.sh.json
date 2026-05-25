@@ -1,0 +1,59 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "Orchestration",
+      "description": "Skills for routing work, loading context, and breaking work into manageable tasks.",
+      "skills": [
+        "using-agent-skills",
+        "context-engineering",
+        "planning-and-task-breakdown"
+      ]
+    },
+    {
+      "title": "Definition",
+      "description": "Skills for clarifying intent, refining ideas, and writing implementation-ready specs.",
+      "skills": [
+        "interview-me",
+        "idea-refine",
+        "spec-driven-development"
+      ]
+    },
+    {
+      "title": "Implementation",
+      "description": "Skills for making code changes with evidence, focus, and production-quality interfaces.",
+      "skills": [
+        "incremental-implementation",
+        "test-driven-development",
+        "source-driven-development",
+        "doubt-driven-development",
+        "frontend-ui-engineering",
+        "api-and-interface-design",
+        "code-simplification",
+        "debugging-and-error-recovery"
+      ]
+    },
+    {
+      "title": "Review",
+      "description": "Skills for quality, security, performance, and browser-runtime validation.",
+      "skills": [
+        "code-review-and-quality",
+        "security-and-hardening",
+        "performance-optimization",
+        "browser-testing-with-devtools"
+      ]
+    },
+    {
+      "title": "Delivery",
+      "description": "Skills for versioning, CI/CD, migrations, docs, and launch readiness.",
+      "skills": [
+        "git-workflow-and-versioning",
+        "ci-cd-and-automation",
+        "deprecation-and-migration",
+        "documentation-and-adrs",
+        "shipping-and-launch"
+      ]
+    }
+  ]
+}

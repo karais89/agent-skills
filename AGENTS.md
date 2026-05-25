@@ -98,10 +98,25 @@ description: {무엇을 하는 스킬인지 한 문장으로 설명하고, "Use 
 node scripts/sync-codex-skills.js --check
 node scripts/validate-skills.js
 node scripts/validate-codex.js
+node scripts/install-codex-project-test.js
 bash hooks/session-start-test.sh
 ```
 
 ## Codex 설치 요약
+
+프로젝트별로 스킬만 설치하려면 대상 프로젝트 루트에서:
+
+```bash
+npx skills add https://github.com/karais89/agent-skills --agent codex --skill '*'
+```
+
+이 방식은 스킬 파일만 설치하며 Codex SessionStart hook, `.codex/agents/` custom subagent, `.codex/config.toml`은 설치하지 않습니다.
+
+대상 프로젝트에 스킬, SessionStart hook, custom subagent를 함께 설치하려면 이 저장소를 clone한 뒤:
+
+```bash
+node agent-skills/scripts/install-codex-project.js --target /path/to/project
+```
 
 이 저장소를 Codex 플러그인으로 설치하려면:
 
