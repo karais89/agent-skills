@@ -28,8 +28,37 @@ Skills also activate automatically based on what you're doing — designing an A
 
 ## Quick Start
 
+<details open>
+<summary><b>Codex</b></summary>
+
+Codex is supported as a first-class target.
+
+**Local / development:**
+
+```bash
+git clone https://github.com/karais89/agent-skills.git
+cd agent-skills
+codex
+```
+
+Codex reads `AGENTS.md`, discovers repo-scoped skills from `.agents/skills/`, and can use custom subagents from `.codex/agents/`.
+
+**Plugin install:**
+
+```bash
+codex plugin marketplace add karais89/agent-skills
+```
+
+Then open `/plugins`, choose the `Agent Skills for Codex` marketplace, and install `agent-skills`.
+
+Project and plugin hooks are available through `.codex/hooks.json` and the plugin default `hooks/hooks.json`. Review and trust them with `/hooks` before they run.
+
+See [docs/codex-setup.md](docs/codex-setup.md).
+
+</details>
+
 <details>
-<summary><b>Claude Code (recommended)</b></summary>
+<summary><b>Claude Code</b></summary>
 
 **Marketplace install:**
 
@@ -108,7 +137,7 @@ Use agent definitions from `agents/` as Copilot personas and skill content in `.
 </details>
 
 <details>
-<summary><b>Codex / Other Agents</b></summary>
+<summary><b>Other Agents</b></summary>
 
 Skills are plain Markdown - they work with any agent that accepts system prompts or instruction files. See [docs/getting-started.md](docs/getting-started.md).
 
@@ -267,6 +296,14 @@ agent-skills/
 │   ├── shipping-and-launch/           #   Ship
 │   └── using-agent-skills/            #   Meta: how to use this pack
 ├── agents/                            # 3 specialist personas
+├── .agents/                           # Codex repo skills mirror + plugin marketplace
+│   ├── skills/                        # Codex repo-scoped skill discovery
+│   └── plugins/marketplace.json       # Codex repo marketplace entry
+├── .codex/                            # Codex project config, hooks, custom agents
+│   ├── agents/                        # Codex custom subagents
+│   ├── config.toml                    # Codex project agent settings
+│   └── hooks.json                     # Codex project lifecycle hooks
+├── .codex-plugin/                     # Codex plugin manifest
 ├── references/                        # 4 supplementary checklists
 ├── hooks/                             # Session lifecycle hooks
 ├── .claude/commands/                  # 7 slash commands (Claude Code)

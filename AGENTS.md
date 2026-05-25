@@ -1,10 +1,40 @@
 # AGENTS.md
 
-This file provides guidance to AI coding agents (Claude Code, Cursor, Copilot, Antigravity, etc.) when working with code in this repository.
+This file provides guidance to AI coding agents (Codex, Claude Code, Cursor, Copilot, Antigravity, etc.) when working with code in this repository.
 
 ## Repository Overview
 
-A collection of skills for Claude.ai and Claude Code for senior software engineers. Skills are packaged instructions and scripts that extend Claude and your coding agents capabilities.
+A collection of production-grade engineering skills for AI coding agents. Skills are packaged instructions, references, and scripts that extend Codex and other coding agents with repeatable senior-engineering workflows.
+
+## Codex Integration
+
+Codex is a first-class target for this repository.
+
+### Codex Structure
+
+- `AGENTS.md` is the durable repository instruction file Codex loads from the project root.
+- `.agents/skills/<skill-name>/SKILL.md` is the Codex repo-scoped skill mirror. Codex scans `.agents/skills` from the current working directory up to the Git root.
+- `skills/<skill-name>/SKILL.md` remains the canonical source used by non-Codex setups and by the Codex plugin manifest.
+- `.codex/agents/*.toml` defines project-scoped custom subagents for Codex.
+- `.codex/hooks.json` defines project lifecycle hooks for local Codex sessions.
+- `.codex-plugin/plugin.json` plus `.agents/plugins/marketplace.json` makes this repository installable as a Codex plugin.
+
+### Codex Maintenance Rules
+
+- Edit canonical skill content in `skills/` first.
+- After changing `skills/`, run `node scripts/sync-codex-skills.js` to refresh `.agents/skills/`.
+- Before publishing, run `node scripts/validate-skills.js` and `node scripts/validate-codex.js`.
+- Keep Codex hook output in Codex format: use `hookSpecificOutput.additionalContext`, not Claude-only `{ "priority": ..., "message": ... }` payloads.
+- Keep custom agents narrow. Review and audit agents should stay read-only unless their purpose explicitly requires edits.
+
+### Codex Skill Mapping
+
+When Codex handles a task in this repository:
+
+- Start with `using-agent-skills` when deciding which workflow applies.
+- Use implicit skill invocation when a skill description clearly matches the user task.
+- Use explicit `$skill-name` invocation when the user names a skill or asks for a specific workflow.
+- Use project subagents only when the user asks for parallel review, specialist validation, or an explicit subagent workflow.
 
 ## OpenCode Integration
 

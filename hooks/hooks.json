@@ -5,7 +5,10 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh"
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh\"",
+            "commandWindows": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"node (Join-Path $env:PLUGIN_ROOT 'hooks/codex-session-start.js')\"",
+            "statusMessage": "Loading agent-skills context",
+            "timeout": 30
           }
         ]
       }

@@ -6,6 +6,24 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SKILLS_DIR="$(dirname "$SCRIPT_DIR")/skills"
 META_SKILL="$SKILLS_DIR/using-agent-skills/SKILL.md"
 
+if [ -t 0 ]; then
+  INPUT=""
+else
+  INPUT=$(cat)
+fi
+
+# Codex sends hook_event_name in hook stdin. Preserve the legacy Claude payload
+# when no Codex hook input is present, but emit Codex-shaped JSON when this
+# script is loaded through Codex's default plugin hook discovery.
+if printf '%s' "$INPUT" | grep -q '"hook_event_name"[[:space:]]*:[[:space:]]*"SessionStart"'; then
+  if command -v node >/dev/null 2>&1; then
+    printf '%s' "$INPUT" | AGENT_SKILLS_ROOT="$(dirname "$SCRIPT_DIR")" node "$SCRIPT_DIR/codex-session-start.js"
+  else
+    printf '%s\n' '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"Agent Skills is available, but node was not found so the Codex startup helper could not run. Use .agents/skills or plugin skills directly."}}'
+  fi
+  exit 0
+fi
+
 if ! command -v jq >/dev/null 2>&1; then
   echo '{"priority": "INFO", "message": "agent-skills: jq is required for the session-start hook but was not found on PATH. Install jq (e.g. `brew install jq` or `apt-get install jq`) to enable meta-skill injection. Skills remain available individually."}'
   exit 0

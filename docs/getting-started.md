@@ -1,10 +1,10 @@
 # Getting Started with agent-skills
 
-agent-skills works with any AI coding agent that accepts Markdown instructions. This guide covers the universal approach. For tool-specific setup, see the dedicated guides.
+agent-skills works with any AI coding agent that accepts Markdown instructions. This guide covers the universal approach. For tool-specific setup, see the dedicated guides, including [Codex setup](codex-setup.md).
 
 ## How Skills Work
 
-Each skill is a Markdown file (`SKILL.md`) that describes a specific engineering workflow. When loaded into an agent's context, the agent follows the workflow — including verification steps, anti-patterns to avoid, and exit criteria.
+Each skill is a Markdown file (`SKILL.md`) that describes a specific engineering workflow. When loaded into an agent's context, the agent follows the workflow - including verification steps, anti-patterns to avoid, and exit criteria.
 
 **Skills are not reference docs.** They're step-by-step processes the agent follows.
 
@@ -34,6 +34,10 @@ Copy the relevant `SKILL.md` content into your agent's system prompt, rules file
 **Rules file:** Add skill content to your project's rules file (CLAUDE.md, .cursorrules, etc.).
 
 **Conversation:** Reference the skill when giving instructions: "Follow the test-driven-development process for this change."
+
+**Codex repo skills:** Launch Codex from this repository and use the mirrored `.agents/skills/` directory for automatic discovery.
+
+**Codex plugin:** Add this repository as a Codex marketplace source and install the `agent-skills` plugin. See [codex-setup.md](codex-setup.md).
 
 ### 4. Use the meta-skill for discovery
 
@@ -101,7 +105,7 @@ Load an agent definition when you need specialized review. For example, ask your
 
 ## Using Commands
 
-The `.claude/commands/` directory contains slash commands for Claude Code:
+The `.claude/commands/` directory contains slash commands for Claude Code. Codex does not install custom slash commands from this repository; use Codex skills, `AGENTS.md`, and custom subagents instead.
 
 | Command | Skill Invoked |
 |---------|---------------|

@@ -3,22 +3,35 @@
 
 set -euo pipefail
 
-tmp_payload="$(mktemp)"
-trap 'rm -f "$tmp_payload"' EXIT
-
 has_jq=0
 if command -v jq >/dev/null 2>&1; then
   has_jq=1
 fi
 
+NODE_BIN="${NODE_BIN:-}"
+if [ -z "$NODE_BIN" ]; then
+  for candidate in node node.exe "/mnt/c/Program Files/nodejs/node.exe" "/c/Program Files/nodejs/node.exe"; do
+    if command -v "$candidate" >/dev/null 2>&1; then
+      NODE_BIN="$candidate"
+      break
+    fi
+    if [ -x "$candidate" ]; then
+      NODE_BIN="$candidate"
+      break
+    fi
+  done
+fi
+
+if [ -z "$NODE_BIN" ]; then
+  echo "SKIP: node is required for session-start-test.sh" >&2
+  exit 0
+fi
+
 payload="$(bash hooks/session-start.sh)"
-printf '%s' "$payload" > "$tmp_payload"
 
-HAS_JQ="$has_jq" PAYLOAD_PATH="$tmp_payload" node <<'NODE'
-const fs = require('fs');
-
-const payload = JSON.parse(fs.readFileSync(process.env.PAYLOAD_PATH, 'utf8'));
-const hasJq = process.env.HAS_JQ === '1';
+ "$NODE_BIN" - "$payload" "$has_jq" <<'NODE'
+const payload = JSON.parse(process.argv[2]);
+const hasJq = process.argv[3] === '1';
 
 if (hasJq) {
   if (payload.priority !== 'IMPORTANT') {
