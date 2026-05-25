@@ -303,9 +303,10 @@ agent-skills/
 │   ├── agents/                        # Codex custom subagents
 │   ├── config.toml                    # Codex project agent settings
 │   └── hooks.json                     # Codex project lifecycle hooks
-├── .codex-plugin/                     # Codex plugin manifest
 ├── references/                        # 4 supplementary checklists
 ├── hooks/                             # Session lifecycle hooks
+├── plugins/
+│   └── agent-skills/                  # Installable Codex plugin bundle
 ├── .claude/commands/                  # 7 slash commands (Claude Code)
 ├── .gemini/commands/                  # 7 slash commands (Gemini CLI)
 └── docs/                              # Setup guides per tool

@@ -4,7 +4,7 @@ This repository is packaged for Codex in three complementary ways:
 
 - Repo-scoped skills in `.agents/skills/`, which Codex discovers when you launch from this repository.
 - Project guidance and subagents in `AGENTS.md` and `.codex/agents/`.
-- An installable Codex plugin via `.codex-plugin/plugin.json` and `.agents/plugins/marketplace.json`.
+- An installable Codex plugin via `plugins/agent-skills/.codex-plugin/plugin.json` and `.agents/plugins/marketplace.json`.
 
 ## Local repository use
 
@@ -27,7 +27,7 @@ node scripts/sync-codex-skills.js --check
 
 ## Install as a Codex plugin
 
-The repository root is also a Codex plugin. Add it as a marketplace source, then install `agent-skills` from the plugin browser:
+The repository includes a Codex plugin at `plugins/agent-skills`. Add the repository as a marketplace source, then install `agent-skills` from the plugin browser:
 
 ```bash
 codex plugin marketplace add karais89/agent-skills
@@ -37,7 +37,7 @@ Inside Codex, open `/plugins`, choose the `Agent Skills for Codex` marketplace, 
 
 The plugin bundles:
 
-- `skills/` through `.codex-plugin/plugin.json`
+- `plugins/agent-skills/skills/` through `plugins/agent-skills/.codex-plugin/plugin.json`
 - Codex lifecycle context through the default `hooks/hooks.json`
 - Install-surface metadata through the plugin manifest
 
@@ -59,7 +59,7 @@ Review this branch against main. Spawn code-reviewer, security-auditor, and test
 
 ## Hooks
 
-Project hooks live in `.codex/hooks.json`. Plugin hooks use the default `hooks/hooks.json` file so the plugin manifest stays compatible with the current Codex validator.
+Project hooks live in `.codex/hooks.json`. Plugin hooks use the default `plugins/agent-skills/hooks/hooks.json` file so the plugin manifest stays compatible with the current Codex validator.
 
 Both paths end at `hooks/codex-session-start.js`, either directly or through the compatibility wrapper in `hooks/session-start.sh`. The Codex hook emits `hookSpecificOutput.additionalContext`. It deliberately keeps startup context concise and points Codex at `using-agent-skills` instead of injecting the full meta-skill into every session.
 

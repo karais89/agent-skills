@@ -42,7 +42,7 @@ function fileExists(relPath) {
 }
 
 function validatePluginManifest() {
-  const manifest = readJson('.codex-plugin/plugin.json');
+  const manifest = readJson('plugins/agent-skills/.codex-plugin/plugin.json');
   if (!manifest) return;
   assert(manifest.name === 'agent-skills', 'Codex plugin name is agent-skills');
   assert(manifest.skills === './skills/', 'Codex plugin points at ./skills/');
@@ -58,7 +58,7 @@ function validateMarketplace() {
   assert(Boolean(plugin), 'Repo Codex marketplace exposes agent-skills');
   if (!plugin) return;
   assert(plugin.source && plugin.source.source === 'local', 'Marketplace uses a local source');
-  assert(plugin.source && plugin.source.path === './', 'Marketplace points at repository root plugin');
+  assert(plugin.source && plugin.source.path === './plugins/agent-skills', 'Marketplace points at plugins/agent-skills');
   assert(plugin.policy && plugin.policy.installation === 'AVAILABLE', 'Marketplace installation policy is AVAILABLE');
   assert(plugin.policy && plugin.policy.authentication === 'ON_INSTALL', 'Marketplace authentication policy is ON_INSTALL');
   assert(plugin.category === 'Productivity', 'Marketplace category is set');
@@ -99,7 +99,7 @@ function validateSkillMirror() {
     encoding: 'utf8'
   });
   if (result.status === 0) {
-    pass('skills/ and .agents/skills/ are in sync');
+    pass('skills/ mirrors are in sync');
   } else {
     fail(`skills mirror is out of sync\n${result.stdout}${result.stderr}`);
   }

@@ -12,7 +12,10 @@ const path = require('path');
 
 const root = path.resolve(__dirname, '..');
 const sourceDir = path.join(root, 'skills');
-const targetDir = path.join(root, '.agents', 'skills');
+const targetDirs = [
+  path.join(root, '.agents', 'skills'),
+  path.join(root, 'plugins', 'agent-skills', 'skills'),
+];
 const checkOnly = process.argv.includes('--check');
 
 function assertInsideRoot(dirPath) {
@@ -41,7 +44,7 @@ function hashFile(filePath) {
   return crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
 }
 
-function compareTrees() {
+function compareTrees(targetDir) {
   const sourceFiles = walkFiles(sourceDir);
   const targetFiles = walkFiles(targetDir);
   const all = new Set([...sourceFiles, ...targetFiles]);
@@ -79,23 +82,29 @@ function main() {
     throw new Error(`Missing source skills directory: ${sourceDir}`);
   }
 
-  assertInsideRoot(targetDir);
+  for (const targetDir of targetDirs) {
+    assertInsideRoot(targetDir);
+  }
 
   if (checkOnly) {
-    const diffs = compareTrees();
+    const diffs = targetDirs.flatMap((targetDir) =>
+      compareTrees(targetDir).map((diff) => `${path.relative(root, targetDir).split(path.sep).join('/')}: ${diff}`)
+    );
     if (diffs.length > 0) {
-      console.error('Codex skill mirror is out of sync:');
+      console.error('Codex skill mirrors are out of sync:');
       for (const diff of diffs) console.error(`  - ${diff}`);
       process.exit(1);
     }
-    console.log('Codex skill mirror OK');
+    console.log('Codex skill mirrors OK');
     return;
   }
 
-  fs.rmSync(targetDir, { recursive: true, force: true });
-  fs.mkdirSync(targetDir, { recursive: true });
-  copyRecursive(sourceDir, targetDir);
-  console.log('Mirrored skills/ to .agents/skills/');
+  for (const targetDir of targetDirs) {
+    fs.rmSync(targetDir, { recursive: true, force: true });
+    fs.mkdirSync(targetDir, { recursive: true });
+    copyRecursive(sourceDir, targetDir);
+  }
+  console.log('Mirrored skills/ to .agents/skills/ and plugins/agent-skills/skills/');
 }
 
 main();
