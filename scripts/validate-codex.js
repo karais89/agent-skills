@@ -41,6 +41,12 @@ function fileExists(relPath) {
   return fs.existsSync(path.join(root, relPath));
 }
 
+function getSkillDirs() {
+  return fs.readdirSync(path.join(root, 'skills'))
+    .filter((entry) => fs.statSync(path.join(root, 'skills', entry)).isDirectory())
+    .sort();
+}
+
 function validatePluginManifest() {
   const manifest = readJson('plugins/agent-skills/.codex-plugin/plugin.json');
   if (!manifest) return;
@@ -49,6 +55,24 @@ function validatePluginManifest() {
   assert(!Object.prototype.hasOwnProperty.call(manifest, 'hooks'), 'Codex plugin relies on default hooks/hooks.json for compatibility');
   assert(!Object.prototype.hasOwnProperty.call(manifest, 'commands'), 'Codex plugin omits unsupported commands field');
   assert(!Object.prototype.hasOwnProperty.call(manifest, 'agents'), 'Codex plugin omits unsupported agents field');
+}
+
+function validateSkillsCliManifest() {
+  const manifest = readJson('.claude-plugin/plugin.json');
+  if (!manifest) return;
+  const expectedSkills = getSkillDirs().map((skillName) => `./skills/${skillName}`);
+  const actualSkills = Array.isArray(manifest.skills) ? [...manifest.skills].sort() : [];
+
+  assert(manifest.name === 'agent-skills', 'skills CLI plugin name is agent-skills');
+  assert(Array.isArray(manifest.skills), 'skills CLI plugin declares a skills list');
+  assert(
+    JSON.stringify(actualSkills) === JSON.stringify(expectedSkills),
+    'skills CLI plugin lists every root skill'
+  );
+
+  for (const skillPath of actualSkills) {
+    assert(fileExists(path.join(skillPath, 'SKILL.md')), `${skillPath}/SKILL.md exists`);
+  }
 }
 
 function validateMarketplace() {
@@ -143,6 +167,7 @@ function simulateHooks() {
 function main() {
   console.log('Codex packaging validation');
   validatePluginManifest();
+  validateSkillsCliManifest();
   validateMarketplace();
   validateCodexAgents();
   validateHooks();

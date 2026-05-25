@@ -1,0 +1,28 @@
+{
+  "name": "agent-skills",
+  "skills": [
+    "./skills/api-and-interface-design",
+    "./skills/browser-testing-with-devtools",
+    "./skills/ci-cd-and-automation",
+    "./skills/code-review-and-quality",
+    "./skills/code-simplification",
+    "./skills/context-engineering",
+    "./skills/debugging-and-error-recovery",
+    "./skills/deprecation-and-migration",
+    "./skills/documentation-and-adrs",
+    "./skills/doubt-driven-development",
+    "./skills/frontend-ui-engineering",
+    "./skills/git-workflow-and-versioning",
+    "./skills/idea-refine",
+    "./skills/incremental-implementation",
+    "./skills/interview-me",
+    "./skills/performance-optimization",
+    "./skills/planning-and-task-breakdown",
+    "./skills/security-and-hardening",
+    "./skills/shipping-and-launch",
+    "./skills/source-driven-development",
+    "./skills/spec-driven-development",
+    "./skills/test-driven-development",
+    "./skills/using-agent-skills"
+  ]
+}
